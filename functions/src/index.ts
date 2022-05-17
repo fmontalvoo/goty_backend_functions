@@ -1,19 +1,17 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
+import * as express from "express";
+import * as cors from "cors";
+
 admin.initializeApp();
 
 const db = admin.firestore();
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//     functions.logger.info("Hello logs!", { structuredData: true });
-//     response.send("Hello from Firebase!");
-// });
+const app = express();
+app.use(cors({ origin: true }));
 
-export const getGOTY = functions.https.onRequest(async (request, response) => {
+app.get('/goty', async (req, res) => {
     const ref = db.collection("goty");
     const snapshot = await ref.get();
     const goty = snapshot.docs.map((doc) => {
@@ -23,5 +21,7 @@ export const getGOTY = functions.https.onRequest(async (request, response) => {
         };
     }
     );
-    response.json(goty);
+    res.json(goty);
 });
+
+exports.api = functions.https.onRequest(app);
