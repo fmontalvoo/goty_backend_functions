@@ -24,4 +24,24 @@ app.get('/goty', async (req, res) => {
     res.json(goty);
 });
 
-exports.api = functions.https.onRequest(app);
+app.post('/goty/:id', async (req, res) => {
+    const id = req.params.id;
+    const ref = db.collection('goty').doc(id);
+    const snapshot = await ref.get();
+    if (snapshot.exists) {
+        const data: any = snapshot.data();
+        // data.votes++;
+        // await ref.set(data);
+        ref.update({ votes: data.votes + 1 });
+        res.status(200).json({
+            message: 'Registro modificado correctamente',
+        });
+    } else {
+        res.status(404).json({
+            message: 'No existe un registro con ese ID',
+        });
+    }
+
+});
+
+export const api = functions.https.onRequest(app);
