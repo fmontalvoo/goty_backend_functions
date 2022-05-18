@@ -34,10 +34,12 @@ app.post('/goty/:id', async (req, res) => {
         // await ref.set(data);
         ref.update({ votes: data.votes + 1 });
         res.status(200).json({
+            ok: true,
             message: 'Registro modificado correctamente',
         });
     } else {
         res.status(404).json({
+            ok: false,
             message: 'No existe un registro con ese ID',
         });
     }
